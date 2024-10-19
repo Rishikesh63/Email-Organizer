@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useEffect } from "react";
 import { useCopilotReadable } from "@copilotkit/react-core";
 
@@ -38,8 +36,12 @@ const useCategorizedEmails = () => {
 
         setEmails(data.categorizedData || []); // Set state with categorized data
         setError(null);  // Clear any previous errors
-      } catch (error: any) {
-        setError(error.message);  // Capture any errors
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          setError(error.message);  // Capture any errors with a message
+        } else {
+          setError(String(error));  // Handle non-Error types
+        }
         console.error("Error fetching emails:", error); // Log any errors
       } finally {
         setLoading(false);  // Stop loading

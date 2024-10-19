@@ -1,23 +1,22 @@
 import { NextResponse } from 'next/server';
+import { CategorizedEmail } from '@/types/emailTypes'; // Importing the type
 
 // Mock email categorization function
-const categorizeEmail = (emailContent: string) => {
-  const categorizedEmails: any[] = [];
+const categorizeEmail = (emailContent: string): CategorizedEmail[] => {
+  const categorizedEmails: CategorizedEmail[] = [];
 
-  // Example categorization logic (replace with your own)
   const subjectMatch = emailContent.match(/Subject:\s*(.*)/);
   const fromMatch = emailContent.match(/From:\s*(.*)/);
-  const emailMatch = emailContent.match(/Email:\s*(.*)/);
-  const contentMatch = emailContent.match(/Dear\s*\[.*?\](.*?)Best regards,/s);
+  const contentMatch = emailContent.match(/Dear\s*\[.*?\](.*?)Best regards,/);
 
   if (subjectMatch) {
-    const emailDetail = {
+    const emailDetail: CategorizedEmail = {
       subject: subjectMatch[1].trim(),
-      urgency: 'Normal', // Set a default urgency or categorize based on logic
+      urgency: 'Normal',
       content: contentMatch ? contentMatch[1].trim() : 'No content available',
       sender: fromMatch ? fromMatch[1].trim() : 'Unknown Sender',
-      date: new Date().toISOString(), // Use the current date as a placeholder
-      category: 'Promotions', // Example category; modify based on your logic
+      date: new Date().toISOString(),
+      category: 'Promotions',
     };
     
     categorizedEmails.push(emailDetail);
@@ -42,7 +41,8 @@ export async function POST(request: Request) {
     } else {
       return NextResponse.json({ category: 'Uncategorized' }, { status: 200 });
     }
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json({ error: 'Failed to categorize email.' }, { status: 500 });
+    console.log('Error categorizing email:', _error);
   }
 }

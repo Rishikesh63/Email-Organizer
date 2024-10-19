@@ -2,9 +2,11 @@
 
 import { useState } from 'react';
 import { EmailCard } from '@/components/EmailCard';
+import { CategorizedEmail } from '@/types/emailTypes'; // Import the type
 
 export default function Home() {
-  const [emails, setEmails] = useState<any[]>([]);
+  // Properly typing the emails state
+  const [emails, setEmails] = useState<CategorizedEmail[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [emailInput, setEmailInput] = useState<string>('');
@@ -18,6 +20,7 @@ export default function Home() {
 
     setLoading(true);
     setError(null);
+
     try {
       const res = await fetch('/api/categorize-email', {
         method: 'POST',
@@ -34,16 +37,16 @@ export default function Home() {
       const data = await res.json();
       console.log('API Response:', data); // Log response for debugging
 
-      // Check if the response contains the categorizedData field and is an array
       if (Array.isArray(data.categorizedData)) {
-        setEmails(data.categorizedData);
+        setEmails(data.categorizedData); // Set state with the fetched emails
         setCategorized(true);
       } else {
-        setEmails([]); // Handle case where there's no valid categorized data
+        setEmails([]); // Clear the state if no valid data is received
         setError('No emails were categorized.');
       }
-    } catch (err) {
+    } catch (err: unknown) {
       setError('Failed to categorize emails.');
+      console.error('Error categorizing emails:', err); // Handle error logging
     } finally {
       setLoading(false);
     }
@@ -80,11 +83,11 @@ export default function Home() {
               emails.map((email, index) => (
                 <EmailCard
                   key={index}
-                  subject={email.subject}   // Adjust to match actual API response
-                  urgency={email.urgency}   // Adjust to match actual API response
-                  content={email.content}   // Adjust to match actual API response
-                  sender={email.sender}     // Adjust to match actual API response
-                  date={email.date}         // Adjust to match actual API response
+                  subject={email.subject}
+                  urgency={email.urgency}
+                  content={email.content}
+                  sender={email.sender}
+                  date={email.date}
                 />
               ))
             ) : (
