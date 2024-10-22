@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { CategorizedEmail } from '@/types/emailTypes'; // Importing the type
 
-// Mock email categorization function
+// Improved email categorization function with urgency detection
 const categorizeEmail = (emailContent: string): CategorizedEmail[] => {
   const categorizedEmails: CategorizedEmail[] = [];
 
@@ -9,14 +9,26 @@ const categorizeEmail = (emailContent: string): CategorizedEmail[] => {
   const fromMatch = emailContent.match(/From:\s*(.*)/);
   const contentMatch = emailContent.match(/Dear\s*\[.*?\](.*?)Best regards,/);
 
+
+
+  // Define urgency keywords
+  const urgencyKeywords = ['ASAP', 'urgent', 'deadline', 'immediately', 'priority'];
+  
+  let urgency = 'Normal'; // Default urgency level
+
+  // Check for urgency keywords in the email content
+  if (urgencyKeywords.some(keyword => emailContent.toLowerCase().includes(keyword.toLowerCase()))) {
+    urgency = 'High';
+  }
+
   if (subjectMatch) {
     const emailDetail: CategorizedEmail = {
       subject: subjectMatch[1].trim(),
-      urgency: 'Normal',
+      urgency: urgency, // Assign urgency based on detected keywords
       content: contentMatch ? contentMatch[1].trim() : 'No content available',
       sender: fromMatch ? fromMatch[1].trim() : 'Unknown Sender',
       date: new Date().toISOString(),
-      category: 'Promotions',
+      category: 'General', // Default category
     };
     
     categorizedEmails.push(emailDetail);
@@ -41,8 +53,8 @@ export async function POST(request: Request) {
     } else {
       return NextResponse.json({ category: 'Uncategorized' }, { status: 200 });
     }
-  } catch (_error) {
+  } catch (error) {
+    console.log('Error categorizing email:', error);
     return NextResponse.json({ error: 'Failed to categorize email.' }, { status: 500 });
-    console.log('Error categorizing email:', _error);
   }
 }
