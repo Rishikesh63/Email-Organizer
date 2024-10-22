@@ -7,7 +7,11 @@ const categorizeEmail = (emailContent: string): CategorizedEmail[] => {
 
   const subjectMatch = emailContent.match(/Subject:\s*(.*)/);
   const fromMatch = emailContent.match(/From:\s*(.*)/);
-  const contentMatch = emailContent.match(/Dear\s*\[.*?\](.*?)Best regards,/);
+  const contentMatch = emailContent.match(/(?:Dear|Hi|Hello|Respected)[\s\S]*?,([\s\S]*?)(?=\s*(Best regards|Sincerely|Regards|Thanks|Yours truly|Cheers|Warm regards))/i);
+
+
+
+
 
 
 
