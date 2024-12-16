@@ -1,4 +1,7 @@
 'use client';
+import Image from 'next/image';
+import logo from '../image/image.png';
+import background from '../image/email-background.jpg';
 
 import { useState } from 'react';
 import { EmailCard } from '@/components/EmailCard';
@@ -53,8 +56,24 @@ export default function Home() {
   };
 
   return (
-    <div className="p-6 min-h-screen bg-gray-100">
+    <div className="relative min-h-screen">
+    {/* Background Image */}
+    <Image
+      src={background}
+      alt="Background"
+      layout="fill"
+      objectFit="cover"
+      quality={100}
+      className="-z-10" // Sends the image to the background
+    />
       <main className="max-w-3xl mx-auto bg-white p-8 rounded shadow">
+      <Image 
+    src={logo} 
+    alt="Email Organizer Logo" 
+    width={80} 
+    height={80} 
+    className="mx-auto mb-4" 
+  />
         <h1 className="text-2xl font-bold mb-4 text-center">Email Organizer</h1>
 
         <div className="mb-6">
