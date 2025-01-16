@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { CopilotKit } from "@copilotkit/react-core"; // Import the CopilotKit provider
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/react"
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -32,6 +33,7 @@ export default function RootLayout({
         {/* Wrap children with CopilotKit provider and specify the runtime URL */}
         <CopilotKit runtimeUrl="/api/copilotkit">
           {children}
+          <Analytics/>
         </CopilotKit>
       </body>
     </html>
